@@ -116,6 +116,13 @@
     console.log(msg);
         $(".messages").prepend("<div class='row text-left' style='background-color: rgb(" + msg.rgbInstantaneous.r + "," + msg.rgbInstantaneous.g + "," + msg.rgbInstantaneous.b + ");'><div class='col-xs-5'><div id='tweet'>" + msg.tweet.text + "</div></div><div class='col-xs-2'><div id='positive'>" + msg.positive.length + "</div></div><div class='col-xs-2'><div id='negative'>" + msg.negative.length + "</div></div><div class='col-xs-2'><div id='aggregate'>" + msg.aggregate.score + "</div></div></div>");
   });
+  socket.on('tweetDataMix',function(msg){
+    console.log(msg);
+  });
+  socket.on('relatedKey',function(msg){
+    console.log(msg);
+  });
+  
   function execute() {
       var topicValue = document.getElementById('stream0').value;
       socket.emit('streamTopic',{topic: topicValue});

@@ -57,8 +57,10 @@ io.on('connection', function(socket){
 					     alchemy_language.sentiment(data, function (err, response) {	//call bluemix sentiment analysis API
 							  if (err)
 							    console.log('error:', err);
-							  else
-							    console.log(JSON.stringify(response, null, 2));
+							  else{
+							    console.log(response);
+							    io.emit('tweetDataMix',response)
+							  }
 						  });
 					     hodClient.call('analyzesentiment', data, function(err, resp){
 					     var sentiment = resp.body.aggregate.sentiment
