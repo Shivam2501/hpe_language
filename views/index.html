@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+<style type="text/css">
+  .button1{
+          padding: 10px 15px;
+          font-size: 20px;
+          font-weight: normal;
+          line-height: 1;
+          color: #2c3e50;
+          text-align: center;
+          border: 2px solid #2c3e50;
+          background: transparent;
+      }
+      .button1:hover{
+          color: #fff;
+          text-align: center;
+          border: 2px solid #2c3e50;
+          background: #2c3e50;
+      }
+      .button1:focus {
+          outline: none;
+      }
+      p {
+          font-size: 20px;
+      }
+      .live_command{
+          width: 100%;
+          height: 40px;
+          padding: 10px 15px;
+          font-size: 20px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          background-color: #fff;
+          background-image: none;
+           border: 2px solid #2c3e50;
+
+      }
+      .live_command:focus{
+        outline: none;
+        border: 2px solid black;
+      }
+</style>
+</head>
+<body>
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<div class="page-header">
+    <h2 class="text-center">Language Modeling <small>v1.0</small></h2>
+</div>
+ <div class="jumbotron">
+    <div class="container-fluid">
+       <form>
+         <p style="font-weight:bold; outline:0;">Enter the Topic:</p>
+        <div class="form-group col-md-10">
+          <input type="text" class="form-control live_command" name="stream" id="stream0" placeholder="What do you want to track the sentiment of on Twitter?">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-default button1" onclick="execute()">Execute</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<div class="row">
+  <div class="col-xs-12 messages">
+
+  </div>
+</div>
+<script>
+
+	var socket=io();
+
+	socket.on('tweetData',function(msg){
+		console.log(msg);
+		    $(".messages").prepend("<div class='row text-left' style='background-color: rgb(" + msg.tweet + "</div></div><div class='col-xs-2'><div id='positive'>" + msg.positive.length + "</div></div><div class='col-xs-2'><div id='negative'>" + msg.negative.length + "</div></div><div class='col-xs-2'><div id='aggregate'>" + msg.aggregate.score + "</div></div></div>");
+	});
+
+	function execute() {
+	    var topicValue = document.getElementById('stream0').value;
+	    socket.emit('streamTopic',{topic: topicValue});
+	  }
+
+</script>
+</body>
+</html>
