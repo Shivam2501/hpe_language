@@ -108,7 +108,7 @@ mapColor = function (score) {
 }
 
 calculateRunningAverage = function(score, n) {
-  newAverage = oldAverage * (n-1)/n + score/n;   // New average = old average * (n-1)/n + new value /n
-  oldAverage = newAverage; //set equal to new average for next go around of calling this function
+  newAverage = oldAverage * (n-1)/n + score/n;   
+  oldAverage = newAverage;
   return newAverage;
 }
