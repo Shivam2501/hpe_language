@@ -29,15 +29,20 @@ io.on('connection', function(socket){
 	socket.on('streamTopic',function(msg){
 		console.log(msg);
 		var data = {text: msg.topic}
-		hodClient.call('findrelatedconcepts', data, function(err, resp){
+		hodClient.call('findrelatedconcepts', data, function(err, resp){	//call related concepts HPE API
 			var relatedKeys={text:resp.body.entities}
-		 	console.log(relatedKeys.text.length);
+			var keyExtract="";
+		 	var i;
+		 	for(i=0;i<relatedKeys.text.length;i++){
+		 		keyExtract +=relatedKeys.text[i].text+" ";
+		 	}
+		 	console.log(keyExtract);
 
 			twitterclient.stream('statuses/filter', {track:msg.topic}, function(stream){
 				stream.on('data',function(tweet){
 					     var data = {text: tweet.text}
 					     console.log('---------------------------------------------');
-					     alchemy_language.sentiment(data, function (err, response) {
+					     alchemy_language.sentiment(data, function (err, response) {	//call bluemix sentiment analysis API
 							  if (err)
 							    console.log('error:', err);
 							  else
