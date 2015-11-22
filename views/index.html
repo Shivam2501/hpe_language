@@ -1,18 +1,40 @@
 <!doctype html>
 <html>
 <head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+   <link href='https://fonts.googleapis.com/css?family=Raleway:400, 600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 <style type="text/css">
-      .button1{
+
+  .heading{
+
+    color:#00001a;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 120px;
+  margin-top: 10px;
+  
+  }
+
+  body{
+   background: url(https://d3ui957tjb5bqd.cloudfront.net/images/screenshots/products/18/188/188520/1-f.jpg?1411214949);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  position:relative;
+  margin:0;
+  }
+  
+  .button1{
           padding: 10px 15px;
           font-size: 20px;
           font-weight: normal;
           line-height: 1;
-          color: #2c3e50;
+          color: #000;
           text-align: center;
           border: 2px solid #2c3e50;
-          background: transparent;
+          background-color:#000000;
       }
       .button1:hover{
           color: #fff;
@@ -24,7 +46,11 @@
           outline: none;
       }
       p {
-          font-size: 20px;
+          position: relative;
+          color: #000033;
+          font-size: 30px;
+          font-weight: normal;
+
       }
       .live_command{
           width: 100%;
@@ -33,30 +59,44 @@
           font-size: 20px;
           font-weight: normal;
           line-height: 1;
-          color: #555;
+          color: #000;
           background-color: #fff;
           background-image: none;
            border: 2px solid #2c3e50;
-
       }
       .live_command:focus{
         outline: none;
         border: 2px solid black;
       }
+
+      .text-center{
+
+        font-weight: normal;
+        font-size:50px;
+      }
+
+
+/*
+      .jumbotron
+      {
+          background-color:#0d001a;
+          background-image: none;
+          color:#e5ccff;
+
+      }*/
 </style>
 </head>
 <body>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-<div class="page-header">
-    <h2 class="text-center">Language Modeling <small>v1.0</small></h2>
+<div class="heading">
+    <h1 class="text-center">LANGUAGE MODELING <small>v1.0</small></h1>
 </div>
-
- <div class="jumbotron">
+<br>
     <div class="container-fluid">
        <form>
-         <p style="font-weight:bold; outline:0;">Enter the Topic:</p>
+         <p>  &nbsp;  Enter the Topic:</p>
         <div class="form-group col-md-10">
           <input type="text" class="form-control live_command" name="stream" id="stream0" placeholder="What do you want to track the sentiment of on Twitter?">
         </div>
@@ -65,30 +105,22 @@
         </div>
       </form>
     </div>
-  </div>
+  
 <div class="row">
   <div class="col-xs-12 messages">
 
   </div>
 </div>
 <script>
-
-	var socket=io();
-
-	socket.on('tweetData',function(msg){
-		console.log(msg);
-		    $(".messages").prepend("<div class='row text-left' style='background-color: rgb(" + msg.tweet + "</div></div><div class='col-xs-2'><div id='positive'>" + msg.positive.length + "</div></div><div class='col-xs-2'><div id='negative'>" + msg.negative.length + "</div></div><div class='col-xs-2'><div id='aggregate'>" + msg.aggregate.score + "</div></div></div>");
-	});
-
-  socket.on('relatedKey',function(msg){
+  var socket=io();
+  socket.on('tweetData',function(msg){
     console.log(msg);
+        $(".messages").prepend("<div class='row text-left' style='background-color: rgb(" + msg.tweet + "</div></div><div class='col-xs-2'><div id='positive'>" + msg.positive.length + "</div></div><div class='col-xs-2'><div id='negative'>" + msg.negative.length + "</div></div><div class='col-xs-2'><div id='aggregate'>" + msg.aggregate.score + "</div></div></div>");
   });
-
-	function execute() {
-	    var topicValue = document.getElementById('stream0').value;
-	    socket.emit('streamTopic',{topic: topicValue});
-	  }
-
+  function execute() {
+      var topicValue = document.getElementById('stream0').value;
+      socket.emit('streamTopic',{topic: topicValue});
+    }
 </script>
 </body>
 </html>
