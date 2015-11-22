@@ -35,8 +35,8 @@ io.on('connection', function(socket){
 		 	var i;
 		 	for(i=0;i<relatedKeys.text.length;i++){
 		 		keyExtract +=relatedKeys.text[i].text+" ";
+		 		 io.emit('relatedKey',relatedKeys.text[i].text)
 		 	}
-		 	console.log(keyExtract);
 
 			twitterclient.stream('statuses/filter', {track:msg.topic}, function(stream){
 				stream.on('data',function(tweet){
