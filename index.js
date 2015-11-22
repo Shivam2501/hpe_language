@@ -8,7 +8,10 @@ var io=require('socket.io')(http)
 var Twitter=require('twitter')
 var havenondemand=require('havenondemand')
 var hodClient= new havenondemand.HODClient('http://api.havenondemand.com',process.env.hpe_apikey)
-
+var watson = require('watson-developer-cloud');
+var alchemy_language = watson.alchemy_language({
+  api_key: process.env.alchemy_apikey
+});
 
 var twitterclient= new Twitter({
 	consumer_key:process.env.consumer_key,
@@ -25,26 +28,39 @@ io.on('connection', function(socket){
 
 	socket.on('streamTopic',function(msg){
 		console.log(msg);
-		twitterclient.stream('statuses/filter', {track:msg.topic}, function(stream){
-			stream.on('data',function(tweet){
-				     var data = {text: tweet.text}
-				     hodClient.call('analyzesentiment', data, function(err, resp){
-				     var sentiment = resp.body.aggregate.sentiment
-				     var score = resp.body.aggregate.score
-				     console.log(tweet.text + " | " + sentiment + " | " + score)
-				     var tweetData={tweet:tweet.text,positive:resp.body.positive,negative:resp.body.negative,aggregate:resp.body.aggregate}
-				     io.emit('tweetData',tweetData)
-				   });
+		var data = {text: msg.topic}
+		hodClient.call('findrelatedconcepts', data, function(err, resp){
+			var relatedKeys={text:resp.body.entities}
+		 	console.log(relatedKeys.text.length);
+
+			twitterclient.stream('statuses/filter', {track:msg.topic}, function(stream){
+				stream.on('data',function(tweet){
+					     var data = {text: tweet.text}
+					     console.log('---------------------------------------------');
+					     alchemy_language.sentiment(data, function (err, response) {
+							  if (err)
+							    console.log('error:', err);
+							  else
+							    console.log(JSON.stringify(response, null, 2));
+						  });
+					     hodClient.call('analyzesentiment', data, function(err, resp){
+					     var sentiment = resp.body.aggregate.sentiment
+					     var score = resp.body.aggregate.score
+					     console.log(tweet.text + " | " + sentiment + " | " + score)
+					     var tweetData={tweet:tweet.text,positive:resp.body.positive,negative:resp.body.negative,aggregate:resp.body.aggregate}
+					     io.emit('tweetData',tweetData)
+					   });
+				});
+
+				stream.on('disconnect', function (disconnectMessage) {
+			        console.log(disconnectMessage);
+			    });
+
+				stream.on('error',function(error){
+					throw error;
+				});
+
 			});
-
-			stream.on('disconnect', function (disconnectMessage) {
-		        console.log(disconnectMessage);
-		    });
-
-			stream.on('error',function(error){
-				throw error;
-			});
-
 		});
 	});
 
